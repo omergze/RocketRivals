@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#070e21" />
+  <meta name="description" content="Rocket Rivals: free private 1v1 multiplayer car soccer with boost, jumps, and real physics." />
+  <title>ROCKET RIVALS — 1v1 car soccer</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <canvas id="game" aria-label="3D Rocket Rivals arena"></canvas>
+  <div id="vignette"></div>
+  <div id="scanlines"></div>
+
+  <header id="topbar">
+    <div class="brand"><span class="brand-icon">✦</span><span>ROCKET<span class="brand-light">RIVALS</span><small>CAR SOCCER • ONLINE 1v1</small></span></div>
+    <div class="right-status"><span id="networkDot" class="status-dot offline"></span><span id="netText">CONNECTING</span><span class="divider-bar"></span><span id="latency">— ms</span></div>
+  </header>
+
+  <section id="scoreboard" class="hidden" aria-label="Game scoreboard">
+    <div class="team team-blue"><small>BLUE</small><strong id="blueScore">0</strong></div>
+    <div class="match-clock"><span id="gameClock">3:00</span><small id="matchStatus">1V1 RANKLESS</small></div>
+    <div class="team team-orange"><strong id="orangeScore">0</strong><small>ORANGE</small></div>
+  </section>
+
+  <div id="floatingMessage" class="hidden"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <section id="menu" class="menu-overlay" aria-label="Game lobby">
+    <div class="menu-card">
+      <div class="mini-label"><span class="pulse"></span> MULTIPLAYER ARENA • OPEN</div>
+      <h1>YOUR ARENA.<br/><em>YOUR RULES.</em></h1>
+      <p class="subheading">Rocket-powered cars. One giant ball. First to the goal. Challenge a friend in your own private arena.</p>
+
+      <div id="menuHome">
+        <button id="playBtn" class="button primary"><span class="button-art">✦</span><span>PLAY ONLINE</span><span class="arrow">↗</span></button>
+        <button id="soloBtn" class="button secondary" style="width:100%;margin-top:10px">PLAY VS BOT (OFFLINE PRACTICE)</button>
+        <div class="or-row"><span></span>OR PLAY A FRIEND<span></span></div>
+        <button id="createBtn" class="button primary"><span class="button-art">✦</span><span>CREATE PRIVATE ROOM</span><span class="arrow">↗</span></button>
+        <div class="or-row"><span></span>OR JOIN YOUR FRIEND<span></span></div>
+        <div class="join-row"><input id="codeInput" maxlength="5" spellcheck="false" autocomplete="off" aria-label="Room code" placeholder="ENTER ROOM CODE" /><button id="joinBtn" class="button secondary">JOIN ROOM →</button></div>
+      </div>
+
+      <div id="menuSearch" class="hidden">
+        <div class="lobby-label">PUBLIC MATCHMAKING</div>
+        <div class="lobby-status"><span class="lobby-spinner"></span><span id="searchStatus">Searching for opponent...</span></div>
+        <button id="cancelSearchBtn" class="button secondary" style="width:100%;margin-top:14px">CANCEL SEARCH</button>
+      </div>
+
+      <div id="menuLobby" class="hidden">
+        <div class="lobby-label">YOUR PRIVATE ROOM</div>
+        <div class="code-plate"><strong id="roomCode">-----</strong><button id="copyCode" class="icon-button" title="Copy room code">⧉</button></div>
+        <button id="inviteBtn" class="button primary"><span>↗</span><span>COPY FRIEND INVITE LINK</span></button>
+        <div class="lobby-status"><span class="lobby-spinner"></span><span id="lobbyStatus">Waiting for player 2 to join...</span></div>
+        <button id="leaveBtn" class="text-button">← LEAVE ROOM</button>
+      </div>
+
+      <div class="controls-help"><div class="help-label">DRIVER'S MANUAL</div><div class="controls-grid"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>DRIVE</span></div><div><kbd>W</kbd><kbd>S</kbd><span>AIR: NOSE DOWN / UP</span></div><div><kbd>SHIFT</kbd><span>BOOST</span></div><div><kbd>SPACE</kbd><span>JUMP / FLIP</span></div><div><kbd>C</kbd><span>BALL CAM</span></div><div><kbd>CTRL</kbd><span>DRIFT</span></div></div></div>
+    </div>
+    <div class="menu-aside"><span class="rotating-diamond">◇</span> NO DOWNLOADS. NO ACCOUNTS. JUST GOALS.</div>
+  </section>
+
+  <div id="inGame" class="hidden">
+    <div id="leftLabel">YOU <span id="teamColor">BLUE</span></div>
+    <button id="exitBtn" title="Leave match">✕ LEAVE</button>
+    <div id="roomHUD">ROOM <span id="hudCode">-----</span><button id="hudCopy" aria-label="Copy invite link">⧉</button></div>
+    <div id="tipLine">WASD DRIVE &nbsp; • &nbsp; SHIFT BOOST &nbsp; • &nbsp; SPACE JUMP / DOUBLE TAP TO FLIP &nbsp; • &nbsp; CTRL DRIFT &nbsp; • &nbsp; Q / E AIR ROLL &nbsp; • &nbsp; C BALL CAM</div>
+    <div id="speedometer"><span id="speedNum">000</span><small>KM/H</small></div>
+    <div id="boostMeter"><div id="boostRing"><span id="boostCount">70</span><small>BOOST</small></div><div class="boost-track"><div id="boostFill"></div></div></div>
+    <div id="cameraBadge">CAR CAM · C TO TOGGLE</div>
+    <div id="touchControls">
+      <div id="joystick" aria-label="Touch joystick"><div id="joyKnob"></div><span class="joystick-hint">MOVE</span></div>
+      <div class="touch-actions"><button id="boostTouch" class="touch-button touch-boost">⚡<small>BOOST</small></button><button id="jumpTouch" class="touch-button touch-jump">↑<small>JUMP</small></button></div>
+    </div>
+  </div>
+  <div id="orientationTip">ROTATE YOUR DEVICE FOR THE BEST EXPERIENCE ↻</div>
+  <div id="replayBadge"><span class="rec"></span>REPLAY</div>
+  <button id="settingsBtn" aria-label="Settings" title="Settings">⚙</button>
+  <div id="settingsPanel" class="hidden">
+    <div class="set-row"><span>GRAPHICS</span><div class="seg" id="qualitySeg"><button data-q="low">LOW</button><button data-q="medium">MED</button><button data-q="high">HIGH</button></div></div>
+    <div class="set-row"><span>RESOLUTION</span><div class="seg" id="resSeg"><button data-r="auto">AUTO</button><button data-r="0.5">50%</button><button data-r="0.75">75%</button><button data-r="1">100%</button><button data-r="1.5">150%</button></div></div>
+    <div class="set-row"><span>VOLUME</span><input id="volRange" type="range" min="0" max="100" step="1" aria-label="Volume" /></div>
+    <div class="set-row"><span>SOUND</span><button id="muteBtn" class="tog">ON</button></div>
+    <div class="set-row"><span>CAMERA SHAKE</span><button id="shakeBtn" class="tog">ON</button></div>
+    <div class="set-hint">C ball cam · M mute · Q/E air roll</div>
+  </div>
+  <script src="/shared.js"></script>
+  <script src="/gl.js"></script>
+  <script src="/world.js"></script>
+  <script src="/fx.js"></script>
+  <script src="/cars.js"></script>
+  <script src="/audio.js"></script>
+  <script src="/game.js"></script>
+</body>
+</html>

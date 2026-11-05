@@ -1,0 +1,14 @@
+{
+  "name": "rocket-rivals",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Online 1v1 WebGL car soccer (Rocket League style) with bot mode. Zero dependencies; deploys on Render.",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/physics.test.js && node test/fuzz.test.js && node test/network.test.js"
+  }
+}

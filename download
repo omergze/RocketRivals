@@ -1,0 +1,7 @@
+node_modules
+test
+.git
+*.md
+render.yaml
+*.zip
+.DS_Store
