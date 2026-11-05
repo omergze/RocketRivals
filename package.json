@@ -9,6 +9,11 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "node test/physics.test.js && node test/fuzz.test.js && node test/network.test.js"
+    "test": "node test/physics.test.js && node test/fuzz.test.js && node test/network.test.js",
+    "dev:worker": "wrangler dev",
+    "deploy:worker": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
   }
 }
